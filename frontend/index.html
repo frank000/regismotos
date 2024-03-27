@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário com QR Code</title>
+</head>
+<body>
+    <form id="dataForm">
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome"><br>
+
+        <label for="telefone">Telefone:</label><br>
+        <input type="text" id="telefone" name="telefone"><br>
+
+        <label for="endereco">Endereço:</label><br>
+        <input type="text" id="endereco" name="endereco"><br>
+
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+
+        <label for="placaMoto">Placa da Moto:</label><br>
+        <input type="text" id="placaMoto" name="placaMoto"><br>
+
+        <label for="marca">Marca:</label><br>
+        <input type="text" id="marca" name="marca"><br>
+
+        <label for="modelo">Modelo:</label><br>
+        <input type="text" id="modelo" name="modelo"><br>
+
+        <label for="numeroCnh">Número CNH:</label><br>
+        <input type="text" id="numeroCnh" name="numeroCnh"><br>
+
+        <label for="tipoSanguineo">Tipo Sanguíneo:</label><br>
+        <input type="text" id="tipoSanguineo" name="tipoSanguineo"><br>
+
+        <button type="submit">Gerar QR Code</button>
+    </form>
+    
+    <div id="qrCodeContainer"></div>
+
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            generateQR(data);
+        });
+
+        function generateQR(data) {
+            fetch('http://localhost:3000/generateQR', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const qrCodeContainer = document.getElementById('qrCodeContainer');
+                qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

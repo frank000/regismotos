@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Instascan</title>
+    <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js" ></script>	
+    <script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+  <style>
+    .cont{
+        position: relative;
+    }
+
+    .result{
+        position: absolute;
+        top: 0;
+    }
+    .negado{
+        position: absolute;
+        top: 0;
+    }
+  </style>
+  </head>
+  <body>
+    <div class="cont">
+        <video style="width: 80%;" id="preview"></video>
+        <div class="result"><img style="width: 10rem;"src="ok.png"></div>
+        <div class="negado"><img style="width: 10rem;" src="negado.png"> </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $("#negado").hide();    
+            $("#result").hide();    
+});
+        let scanner = new Instascan.Scanner(
+            {
+                video: document.getElementById('preview')
+            }
+        );
+        scanner.addListener('scan', function(content) {
+            consultarRegistro(content) 
+            // window.open(content, "_blank");
+        });
+        Instascan.Camera.getCameras().then(cameras => 
+        {
+            if(cameras.length > 0){
+                scanner.start(cameras[0]);
+            } else {
+                console.error("Não existe câmera no dispositivo!");
+            }
+        });
+        function consultarRegistro(numeroCnh) {
+                fetch('/consultaRegistro?xkey=' + numeroCnh)
+                    .then(response => {
+                        if (response.ok) {
+                            $("#result").show();
+                            return response.json();
+                        } else {
+                            $("#negado").show();
+                            throw new Error('Registro não encontrado');
+                        }
+                    })
+                    .then(data => {
+                        $("result").show();
+                        resultContainer.innerText = 'Registro encontrado: ' + JSON.stringify(data);
+                    })
+                    .catch(error => {
+                        $("negado").show();
+                        resultContainer.innerText = 'Erro: ' + error.message;
+                    });
+            }
+    </script>
+
+ </body>
+</html>

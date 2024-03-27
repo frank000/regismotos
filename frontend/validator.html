@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor de QR Code</title>
+</head>
+<body>
+    <h1>Leitor de QR Code</h1>
+    <video id="video" width="100%" height="100%" autoplay></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="result"></div>
+    <button onclick="readQRCode()">Ler QR Code</button>
+
+    <button onclick="toggleCamera()">Alternar Câmera</button>
+    <script src="jsQR.js"></script>
+    <script  >
+ 
+
+         let video;
+        let canvasElement;
+        let canvas;
+        let resultContainer;
+        let stream;
+        let facingMode = 'environment'; // Inicializa com a câmera traseira
+
+        document.addEventListener('DOMContentLoaded', function() {''
+            video = document.getElementById('video');
+            canvasElement = document.getElementById('canvas');
+            canvas = canvasElement.getContext('2d');
+            resultContainer = document.getElementById('result');
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                initializeCamera();
+            }
+        });
+
+        async function initializeCamera() {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: facingMode } // Configura a câmera inicial para traseira
+            });
+
+            video.srcObject = stream;
+            video.play();
+            requestAnimationFrame(tick);
+        }
+
+        async function toggleCamera() {
+            if (facingMode === 'user') {
+                facingMode = 'environment'; // Alterna para a câmera traseira
+            } else {
+                facingMode = 'user'; // Alterna para a câmera frontal
+            }
+
+            stream.getTracks().forEach(track => {
+                track.stop(); // Interrompe a transmissão atual
+            });
+
+            // Inicializa a câmera com a nova configuração
+            initializeCamera();
+        }
+
+        function readQRCode() {
+            canvasElement.width = video.videoWidth;
+            canvasElement.height = video.videoHeight;
+            canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+            const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            if (code) {
+                resultContainer.innerText = 'QR Code detectado: ' + code.data;
+            } else {
+                resultContainer.innerText = 'Nenhum QR Code detectado';
+            }
+        }
+
+        function tick() {
+            video.addEventListener('canplay', function() {
+                canvasElement.width = video.videoWidth;
+                canvasElement.height = video.videoHeight;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                requestAnimationFrame(tick);
+            });
+        }
+        function consultarRegistro(numeroCnh) {
+    fetch('/consultaRegistro?cnh=' + numeroCnh)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Registro não encontrado');
+            }
+        })
+        .then(data => {
+            resultContainer.innerText = 'Registro encontrado: ' + JSON.stringify(data);
+        })
+        .catch(error => {
+            resultContainer.innerText = 'Erro: ' + error.message;
+        });
+}
+    </script>
+</body>
+</html>
