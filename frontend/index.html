@@ -1,41 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        body{
+            background-color: #001d59;
+        }
+        .container {
+            height: 50vh;
+                margin: 50px;
+                /* outline: solid 1px black; */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+        }
+        .bg{
+            position: relative; 
+
+        }
+
+        .bg::before{
+ 
+    content: "";
+      background-image:   url(./img/fundomotos.jpeg);
+      background-size: cover;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.50;
+      border-radius: 5%;
+        }
+        .formulario {
+  
+            width: 40rem;
+            /* height: 50px; */
+            border-radius: 5%;
+            /* background-color: black; */
+            outline: solid 2px #ffffff;
+            padding: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+  color: #ffffff;  
+            padding: 2rem 0 2rem 0;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário com QR Code</title>
 </head>
 <body>
-    <form id="dataForm">
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="nome" name="nome"><br>
-
-        <label for="telefone">Telefone:</label><br>
-        <input type="text" id="telefone" name="telefone"><br>
-
-        <label for="endereco">Endereço:</label><br>
-        <input type="text" id="endereco" name="endereco"><br>
-
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
-
-        <label for="placaMoto">Placa da Moto:</label><br>
-        <input type="text" id="placaMoto" name="placaMoto"><br>
-
-        <label for="marca">Marca:</label><br>
-        <input type="text" id="marca" name="marca"><br>
-
-        <label for="modelo">Modelo:</label><br>
-        <input type="text" id="modelo" name="modelo"><br>
-
-        <label for="numeroCnh">Número CNH:</label><br>
-        <input type="text" id="numeroCnh" name="numeroCnh"><br>
-
-        <label for="tipoSanguineo">Tipo Sanguíneo:</label><br>
-        <input type="text" id="tipoSanguineo" name="tipoSanguineo"><br>
-
-        <button type="submit">Gerar QR Code</button>
-    </form>
+<div class="container">
+    <div class="bg">
+        <div class="formulario">
+            <div>
+                <div><h1>Formulário de Cadastro</h1></div>
+            <div style="    padding: 0 5rem;">
+                <form id="dataForm">
+                    <label for="nome">Nome:</label><br>
+                    <input type="text" id="nome" name="nome"><br>
+            
+                    <label for="telefone">Telefone:</label><br>
+                    <input type="text" id="telefone" name="telefone"><br>
+            
+                    <label for="endereco">Endereço:</label><br>
+                    <input type="text" id="endereco" name="endereco"><br>
+            
+                    <label for="email">Email:</label><br>
+                    <input type="text" id="email" name="email"><br>
+            
+                    <label for="placaMoto">Placa da Moto:</label><br>
+                    <input type="text" id="placaMoto" name="placaMoto"><br>
+            
+                    <label for="marca">Marca:</label><br>
+                    <input type="text" id="marca" name="marca"><br>
+            
+                    <label for="modelo">Modelo:</label><br>
+                    <input type="text" id="modelo" name="modelo"><br>
+            
+                    <label for="numeroCnh">Número CNH:</label><br>
+                    <input type="text" id="numeroCnh" name="numeroCnh"><br>
+            
+                    <label for="tipoSanguineo">Tipo Sanguíneo:</label><br>
+                    <input type="text" id="tipoSanguineo" name="tipoSanguineo"><br>
+            
+                    <button type="submit">Cadastrar</button>
+                </form>
+            </div>
+            </div>
+          
+        </div>
+       
+    </div>
+    
+</div>
+    
     
     <div id="qrCodeContainer"></div>
 
