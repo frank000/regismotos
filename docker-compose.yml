@@ -31,30 +31,30 @@ services:
       retries: 2
 
 
-  # myapp:
-  #   depends_on:
-  #     mysqldb:
-  #       condition: service_healthy    
-  #   build: . 
-  #   ports:
-  #     # <Port exposed> : <MySQL Port running inside container>
-  #     - '3000:3000'
-  #   expose:
-  #     - '3000'  
-  #   restart: on-failure
-  #   networks:
-  #     - app-tier  
+  myapp:
+    depends_on:
+      mysqldb:
+        condition: service_healthy    
+    build: . 
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - '3000:3000'
+    expose:
+      - '3000'  
+    restart: on-failure
+    networks:
+      - app-tier  
 
-  # frontend:
-  #   build: ./frontend/.
-  #   ports:
-  #     # <Port exposed> : <MySQL Port running inside container>
-  #     - '8080:8080'
-  #   expose:
-  #     - '8080'
-  #   restart: on-failure
-  #   networks:
-  #     - app-tier  
+  frontend:
+    build: ./frontend/.
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - '8080:8080'
+    expose:
+      - '8080'
+    restart: on-failure
+    networks:
+      - app-tier  
 
 
 
