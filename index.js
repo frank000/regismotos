@@ -10,27 +10,20 @@ const port = 3000;
 
 // Configuração do MySQL
 const connection = mysql.createConnection({
-    host: 'mysqldb',
+    host: process.env.DBHOST,
     // host: 'mysqldb',
 
-    port:'3306',
-    user: 'user',
-    password: 'password',
-    database: 'regismoto_db'
+    port: process.env.DBPORT,
+    user: process.env.DBUSER,
+    password: process.env.DBPASS,
+    database: process.env.DBNAME
 });
 connection.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
   });
 
- 
-transporter.verify(function(error, success) {
-    if (error) {
-         console.log(error);
-    } else {
-         console.log('Server is ready');
-    }
-});
+
 app.use(express.static('public'));
 app.use(express.json());
 
@@ -110,15 +103,7 @@ async function saveToDatabaseAndSendEmail(data) {
         });
     });
 }
-// Função para enviar e-mail
-async function sendEmail(qrCode, recipientEmail) {
-    await transporter.sendMail({
-        from: 'seu_email',
-        to: recipientEmail,
-        subject: 'Código QR',
-        html: `<p>Segue o código QR:</p><img src="${qrCode}" alt="QR Code">`
-    });
-}
+ 
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

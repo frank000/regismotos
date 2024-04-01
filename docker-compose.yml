@@ -8,7 +8,6 @@ networks:
 services:
   mysqldb:
     image: mysql:5.7
-    container_name: mysqldb
     restart: always
     environment:
       MYSQL_DATABASE: 'regismoto_db'
@@ -17,40 +16,37 @@ services:
       # You can use whatever password you like
       MYSQL_PASSWORD: 'password'
       # Password for root access
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'pmdf123'
     ports:
       # <Port exposed> : <MySQL Port running inside container>
       - '3306:3306'
       # Where our data will be persisted
     volumes:
-      - my-db:/var/lib/mysql
+      - dblocal:/var/lib/mysql/:rw
+      - ./configs/mysql/data.sql:/docker-entrypoint-initdb.d/data.sql
     networks:
       - app-tier  
     healthcheck:
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'mysqldb', '-u', 'password', '-p$$MYSQL_ROOT_PASSWORD' ]
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'mysqldb', '-u', 'user', '-p$$MYSQL_PASSWORD' ]
       timeout: 5s
       retries: 2
 
 
-  myapp:
-    container_name: myapp
-    depends_on:
-      mysqldb:
-        condition: service_healthy    
-    build: . 
-    ports:
-      # <Port exposed> : <MySQL Port running inside container>
-      - '3000:3000'
-    expose:
-      - '3000'  
-    restart: on-failure
-    networks:
-      - app-tier  
+  # backend:
+  #   depends_on:
+  #     mysqldb:
+  #       condition: service_healthy    
+  #   build: . 
+  #   ports:
+  #     # <Port exposed> : <MySQL Port running inside container>
+  #     - '3000:3000'
+  #   expose:
+  #     - '3000'  
+  #   restart: on-failure
+  #   networks:
+  #     - app-tier  
 
   frontend:
-    container_name: frontend
-    depends_on:
-      - myapp
     build: ./frontend/.
     ports:
       # <Port exposed> : <MySQL Port running inside container>
@@ -60,6 +56,18 @@ services:
     restart: on-failure
     networks:
       - app-tier  
+    #     frontend:
+    # depends_on:
+    #   - 'backend'
+    # build: ./frontend/.
+    # ports:
+    #   # <Port exposed> : <MySQL Port running inside container>
+    #   - '8080:8080'
+    # expose:
+    #   - '8080'
+    # restart: on-failure
+    # networks:
+    #   - app-tier  
 
 
 
@@ -67,4 +75,4 @@ services:
 
 # Names our volume
 volumes:
-  my-db:
+  dblocal:
