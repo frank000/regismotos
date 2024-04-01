@@ -2,6 +2,7 @@
 FROM nginx:latest
 
 # Copie os arquivos HTML e o arquivo de configuração do Nginx para dentro do contêiner
+COPY ./img/* /usr/share/nginx/html/img/
 COPY ./* /usr/share/nginx/html/
 COPY default.conf /etc/nginx/conf.d/default.conf
 
