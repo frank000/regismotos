@@ -46,13 +46,19 @@
         Instascan.Camera.getCameras().then(cameras => 
         {
             if(cameras.length > 0){
-                scanner.start(cameras[0]);
+                scanner.start(cameras[1]);
             } else {
                 console.error("Não existe câmera no dispositivo!");
             }
         });
         function consultarRegistro(numeroCnh) {
-                fetch('/consultaRegistro?xkey=' + numeroCnh)
+                fetch('https://profound-briefly-elf.ngrok-free.app/api/consultaRegistro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({xkey : numeroCnh})
+            })
                     .then(response => {
                         if (response.ok) {
                             $("#result").show();

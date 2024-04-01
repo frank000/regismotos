@@ -10,8 +10,8 @@ const port = 3000;
 
 // Configuração do MySQL
 const connection = mysql.createConnection({
-    // host: 'localhost',
     host: 'mysqldb',
+    // host: 'mysqldb',
 
     port:'3306',
     user: 'user',
@@ -33,10 +33,14 @@ transporter.verify(function(error, success) {
 });
 app.use(express.static('public'));
 app.use(express.json());
+
+app.get('/api/teste', (req, res) => {
+    res.status(200).json("ok"); 
+});
 // Rota para consultar um registro pelo número da CNH
-app.get('/consultaRegistro', (req, res) => {
-    req.query.cnh
-    let decoded = Buffer.from(req.query.xkey, 'base64').toString();
+app.post('/api/consultaRegistro', (req, res) => {
+ 
+    let decoded = Buffer.from(req.body.xkey, 'base64').toString();
     const values = decoded.split("+");
 
     // Consulta ao banco de dados
@@ -55,7 +59,7 @@ app.get('/consultaRegistro', (req, res) => {
 });
 
 // Rota para gerar QR code, enviar e-mail e salvar no banco de dados
-app.post('/generateQR', (req, responseFull) => { 
+app.post('/api/generateQR', (req, responseFull) => { 
     console.log(req.body.nome)
 
      saveToDatabaseAndSendEmail(req.body)

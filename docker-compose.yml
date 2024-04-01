@@ -8,6 +8,7 @@ networks:
 services:
   mysqldb:
     image: mysql:5.7
+    container_name: mysqldb
     restart: always
     environment:
       MYSQL_DATABASE: 'regismoto_db'
@@ -32,6 +33,7 @@ services:
 
 
   myapp:
+    container_name: myapp
     depends_on:
       mysqldb:
         condition: service_healthy    
@@ -46,6 +48,9 @@ services:
       - app-tier  
 
   frontend:
+    container_name: frontend
+    depends_on:
+      - myapp
     build: ./frontend/.
     ports:
       # <Port exposed> : <MySQL Port running inside container>
