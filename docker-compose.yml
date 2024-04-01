@@ -26,7 +26,7 @@ services:
     networks:
       - app-tier  
     healthcheck:
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'mysqldb', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'mysqldb', '-u', 'password', '-p$$MYSQL_ROOT_PASSWORD' ]
       timeout: 5s
       retries: 2
 

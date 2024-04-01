@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express');
 const qr = require('qrcode');
 const nodemailer = require('nodemailer');
@@ -8,8 +10,8 @@ const port = 3000;
 
 // Configuração do MySQL
 const connection = mysql.createConnection({
-    host: 'localhost',
-    // host: 'mysqldb',
+    // host: 'localhost',
+    host: 'mysqldb',
 
     port:'3306',
     user: 'user',
@@ -21,19 +23,7 @@ connection.connect(function(err) {
     console.log("Connected!");
   });
 
-// Configuração do Nodemailer
-const transporter = nodemailer.createTransport({
-    host: 'mail.pm.df.gov.br',
-    port: 25,
-    from: "pmdf@pm.df.gov.br",
-    // tls: true,
-    ignoreTLS:true,
-    auth: {
-        user: 'sgpol',
-        pass: 'sgpol10203040'
-    },
-
-});
+ 
 transporter.verify(function(error, success) {
     if (error) {
          console.log(error);
