@@ -56,10 +56,11 @@ app.post('/api/generateQR', (req, responseFull) => {
     console.log(req.body.nome)
 
      saveToDatabaseAndSendEmail(req.body)
-    .then((res) => { 
+    .then((res) => {
+        console.log('1 ',res  );
         qr.toDataURL(Buffer.from(req.body.numero_cnh+ '+' + res.insertId).toString('base64'))
         .then((url) => {
-            responseFull.json({ qrCode: url , message: 'QR code enviado por e-mail e salvo no banco de dados com sucesso!' })
+            responseFull.json({valido: true, qrCode: url , message: 'QR code enviado por e-mail e salvo no banco de dados com sucesso!' })
 
             // sendEmail(req.body.nome, req.body.email, req.body.res)
             // .then((ok) => {
@@ -73,13 +74,17 @@ app.post('/api/generateQR', (req, responseFull) => {
 
             // });
 
+        },
+        (reject)=>{
+            console.error(err);
         })
         .catch((err) => {
           console.error(err);
         });
     })
     .catch((error) => {
-        console.error('Erro ao salvar no banco de dados e/ou enviar e-mail:', error);
+        console.log('2 ',error  );
+        responseFull.json({valido: false,  qrCode: null , message: error});
     });
  
 
@@ -90,21 +95,52 @@ app.post('/api/generateQR', (req, responseFull) => {
 
 async function saveToDatabaseAndSendEmail(data) {
     return new Promise((resolve, reject) => {
-        const { nome, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode } = data;
-        const sql = 'INSERT INTO registros (nome, telefone, endereco, email, placa_moto, marca, modelo, numero_cnh, tipo_sanguineo, qr_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        connection.query(sql, [nome, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode], (error, results) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(results);
- 
-              
-            }
-        });
+
+        const resultadoValidacao = validarCampos(data);
+        console.info(resultadoValidacao)
+        if (resultadoValidacao.valido) {
+            const { nome, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode } = data;
+        
+            const sql = 'INSERT INTO registros (nome, telefone, endereco, email, placa_moto, marca, modelo, numero_cnh, tipo_sanguineo, qr_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            connection.query(sql, [nome, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode], (error, results) => {
+                if (error) {
+                    console.log("erro do banco" , error)
+                    reject(error.code);
+                } else {
+                    resolve(results);
+     
+                  
+                }
+            });
+        } else {
+            let msg = 'Campos faltantes:' +  resultadoValidacao.camposVazios.join(", ");
+            console.log(msg);
+            reject(msg)
+        }
+                
+                
+     
     });
 }
- 
+function validarCampos(data) {
+    const camposObrigatorios = ['nome', 'telefone', 'endereco', 'email', 'placaMoto', 'marca', 'modelo', 'numeroCnh', 'tipoSanguineo'];
+    const camposFaltantes = [];
+    const camposVazios = [];
 
+    camposObrigatorios.forEach(campo => {
+        if (!data.hasOwnProperty(campo)) {
+            camposFaltantes.push(campo);
+        } else if (!data[campo] || data[campo].trim() === '') {
+            camposVazios.push(campo);
+        }
+    });
+
+    if (camposFaltantes.length > 0 || camposVazios.length > 0) {
+        return { valido: false, camposFaltantes, camposVazios };
+    } else {
+        return { valido: true };
+    }
+}
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

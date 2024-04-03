@@ -42,9 +42,18 @@
             justify-content: center;
             align-items: center;
             position: relative;
-  color: #ffffff;  
+             color: #ffffff;  
             padding: 2rem 0 2rem 0;
         }
+        #ctnqrCode{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #qrCodeContainer{
+            margin-left: 50%;
+        }
+        
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,7 +94,7 @@
                     <label for="tipoSanguineo">Tipo Sanguíneo:</label><br>
                     <input type="text" id="tipoSanguineo" name="tipoSanguineo"><br>
             
-                    <button type="submit">Cadastrar</button>
+                    <button id="btnSave" type="submit">Cadastrar</button>
                 </form>
             </div>
             </div>
@@ -97,9 +106,33 @@
 </div>
     
     
-    <div id="qrCodeContainer"></div>
+<div id="ctnqrCode" style="color: #ffffff;padding: 0 45% 0 45%;">
+<div>
+    <h1>Comprovante de inscrição</h1>
+    <h3>Favor imprimir:         
+        <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
+</div>
+<div id="qrCodeContainer"></div>
 
+</div>
+    <script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
     <script>
+ 
+
+        $(document).ready(()=>{
+            $("#ctnqrCode").hide();
+
+            $('#bt').click(function () {
+                doc.fromHTML($('body').html(), 15, 15, {
+                    'width': 170,
+                        'elementHandlers': specialElementHandlers
+                });
+                myBlob = doc.save('blob');
+            });
+        })
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -111,7 +144,7 @@
         });
 
         function generateQR(data) {
-            fetch('/api/generateQR', {
+            fetch('http://localhost:3000/api/generateQR', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -120,8 +153,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                const qrCodeContainer = document.getElementById('qrCodeContainer');
-                qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+                if(data.valido){
+                    $("#ctnqrCode").show();
+                    $("#btnSave").attr("disabled", true);  
+                    const qrCodeContainer = document.getElementById('qrCodeContainer');
+                    qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+                }else if(data.message == "ER_DUP_ENTRY"){
+                    alert("Já existe um registro com essa CNH.")
+                }
+                else{
+                    alert(data.message)
+                }
+                
             })
             .catch(error => console.error('Error:', error));
         }

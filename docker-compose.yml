@@ -26,27 +26,30 @@ services:
       - ./configs/mysql/data.sql:/docker-entrypoint-initdb.d/data.sql
     networks:
       - app-tier  
-    healthcheck:
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'mysqldb', '-u', 'user', '-p$$MYSQL_PASSWORD' ]
-      timeout: 5s
-      retries: 2
+    # healthcheck:
+    #   test: ["CMD", 'mysqladmin', 'ping', '-h', 'mysqldb', '-u', 'user', '-p$$MYSQL_PASSWORD' ]
+    #   timeout: 5s
+    #   retries: 2
 
 
-  # backend:
-  #   depends_on:
-  #     mysqldb:
-  #       condition: service_healthy    
-  #   build: . 
-  #   ports:
-  #     # <Port exposed> : <MySQL Port running inside container>
-  #     - '3000:3000'
-  #   expose:
-  #     - '3000'  
-  #   restart: on-failure
-  #   networks:
-  #     - app-tier  
+  backend:
+    depends_on:
+      - 'mysqldb'
+      # mysqldb:
+      #   condition: service_healthy    
+    build: . 
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - '3000:3000'
+    expose:
+      - '3000'  
+    restart: on-failure
+    networks:
+      - app-tier  
 
   frontend:
+    depends_on:
+      - 'backend'
     build: ./frontend/.
     ports:
       # <Port exposed> : <MySQL Port running inside container>
