@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body{
+            background-color: #001d59;
+        }
+        .container {
+            height: 50vh;
+                margin: 50px;
+                /* outline: solid 1px black; */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+        }
+        .bg{
+            position: relative; 
+
+        }
+
+        .bg::before{ 
+            content: "";
+            background-image:   url(./img/fundomotos.jpeg);
+            background-size: cover;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+            opacity: 0.50;
+            border-radius: 5%;
+        }
+        .formulario {
+  
+            width: 40rem;
+            /* height: 50px; */
+            border-radius: 5%;
+            /* background-color: black; */
+            outline: solid 2px #ffffff;
+            padding: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+             color: #ffffff;  
+            padding: 2rem 0 2rem 0;
+        }
+        #ctnqrCode{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #qrCodeContainer{
+            margin-left: 50%;
+        }
+        
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário com QR Code</title>
+</head>
+<body>
+<div class="container">
+    <div class="bg">
+        <div class="formulario">
+            <div>
+                <div><h1>Termo de inscrição</h1></div>
+            </div>    
+            <div >
+                No ato da inscrição para participar do 1º Encontro Motociclístico da PMDF, declaro estar plenamente ciente da proibição legal de conduzir qualquer veículo automotor sob influência de bebidas alcoólicas, bem como qualquer outro tipo de substância entorpecente e/ou psicotrópica, infrações sujeitas às sanções administrativas e penais previstas no Código de Trânsito Brasileiro e legislação penal correlacionada. O uso de substâncias ilícitas, a prática de manobras de exibição, o cometimento de infrações de trânsito e o desrespeito à ordem social e o espírito de camaradagem, que caracteriza o evento, não serão tolerados. Declaro também estar informado sobre a vedação de transporte, comercialização e uso de bebidas alcoólicas no local. Por fim, declaro ainda estar ciente e de acordo com a condição de inscrição para o evento, que consiste na doação de 1 (um) quilo de alimento não perecível (exceto sal) – que será destinado ao Projeto Solidariedade Salva, da Secretaria de Atendimento à Comunidade do GDF –, e será arrecadado no dia do Encontro Motociclístico na fase de credenciamento.
+            </div>
+            </div>
+          
+        </div>
+       
+    </div>
+    
+</div>
+    
+ 
+</div>
+    <script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+    <script>
+ 
+
+        $(document).ready(()=>{
+ 
+        })
+       
+    </script>
+</body>
+</html>
