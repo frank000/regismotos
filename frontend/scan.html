@@ -24,16 +24,17 @@
   </head>
   <body>
     <div class="cont">
-        <video style="width: 80%;" id="preview"></video>
-        <div class="result"><img style="width: 10rem;"src="ok.png"></div>
-        <div class="negado"><img style="width: 10rem;" src="negado.png"> </div>
+        <video style="width: 50%;" id="preview"></video>
+        <div id="result" class="result"><img style="width: 10rem;"src="ok.png"></div>
+        <div id="negado" class="negado"><img style="width: 10rem;" src="negado.png"> </div>
+        <div id="resultQuery"></div>
     </div>
 
     <script>
         $(document).ready(function(){
-            $("#negado").hide();    
-            $("#result").hide();    
-});
+                $("#negado").hide();    
+                $("#result").hide();    
+    });
         let scanner = new Instascan.Scanner(
             {
                 video: document.getElementById('preview')
@@ -51,30 +52,40 @@
                 console.error("Não existe câmera no dispositivo!");
             }
         });
-        function consultarRegistro(numeroCnh) {
-                fetch('https://profound-briefly-elf.ngrok-free.app/api/consultaRegistro', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({xkey : numeroCnh})
-            })
+        function consultarRegistro(content) {
+                fetch("/api/consultaRegistro?xkey=" + content)
                     .then(response => {
-                        if (response.ok) {
-                            $("#result").show();
-                            return response.json();
+
+                        if (!response.ok) {
+                            throw new Error('Erro ao carregar os dados');
+                        }
+                        // Se a resposta for bem-sucedida, retorna os dados no formato JSON
+                        return response.json();
+                     
+                    })
+                    .then(data => {
+                        console.log('res ', data.valido)
+                        console.log('res ', data.result)
+                        if (data.valido) {
+                            $("#negado").hide();
+                            $("#result").show(); 
+                            $("#resultQuery").html(
+                                "<p>Nome: " + data.result[0].nome + "</p>" +
+                                "<p>CPF: " + data.result[0].cpf + "</p>" +
+                                "<p>CNH: " + data.result[0].numero_cnh + "</p>" +
+                                "<p>Placa: " + data.result[0].palca_moto + "</p>"
+                            )    
                         } else {
+                            $("#result").hide();
                             $("#negado").show();
                             throw new Error('Registro não encontrado');
                         }
-                    })
-                    .then(data => {
-                        $("result").show();
-                        resultContainer.innerText = 'Registro encontrado: ' + JSON.stringify(data);
+                
                     })
                     .catch(error => {
-                        $("negado").show();
-                        resultContainer.innerText = 'Erro: ' + error.message;
+                        $("#result").hide();
+                            $("#negado").show();
+                            $("#resultQuery").html('Registro não encontrado')  
                     });
             }
     </script>

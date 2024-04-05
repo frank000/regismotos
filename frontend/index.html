@@ -6,7 +6,7 @@
             background-color: #001d59;
         }
         .container {
-            height: 50vh;
+            /* height: 50vh; */
             margin: 15%;
                 /* outline: solid 1px black; */
                 display: flex;
@@ -67,14 +67,14 @@
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário com QR Code</title>2 min
+    <title>Formulário com QR Code</title>
 </head>
 <body>
 <div class="container">
     <div class="bg">
         <div class="formulario">
             <div>
-                <div><h1>Formulário de Cadastro</h1></div>
+                <div><h1>Passeio Motociclístico do GTAM</h1></div>
             <div style="    padding: 0 5rem;">
                 <form id="dataForm">
                     <label for="nome">Nome:</label><br>
@@ -137,6 +137,8 @@
     <h1>Comprovante de inscrição</h1>
     <h3>Favor imprimir:         
         <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
+        <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
+        <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
 </div>
 <div id="qrCodeContainer"></div>
 
@@ -210,8 +212,10 @@
                 }else if(data.message == "ER_DUP_ENTRY"){
                     alert("Já existe um registro com essa CNH.")
                 }
-                else{
-                    alert(data.message)
+                else if(ER_DUP_ENTRY){
+                    alert("Não foi possível registrar. Favor conferir os dados inseridos.")
+                }else{
+                    alert("Erro: " + data.message + ". Favor contactar a oraganização.")
                 }
                 
             })

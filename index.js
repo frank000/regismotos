@@ -27,53 +27,47 @@ connection.connect(function(err) {
 app.use(express.static('public'));
 app.use(express.json());
 
-app.get('/api/teste', (req, res) => {
-    res.status(200).json("ok"); 
-});
-// Rota para consultar um registro pelo número da CNH
-app.post('/api/consultaRegistro', (req, res) => {
  
-    let decoded = Buffer.from(req.body.xkey, 'base64').toString();
+// Rota para consultar um registro pelo número da CNH
+app.get('/api/consultaRegistro', async function(req, responseFull){ 
+
+    console.log("CONSULTA ENTRADA - 1 : " , req.query.xkey)
+    let decoded = Buffer.from(req.query.xkey, 'base64').toString();
+
+    console.log("CONSULTA ENTRADA - 2 : " , decoded)
     const values = decoded.split("+");
 
+    console.log("CONSULTA ENTRADA - 2 : " , values)
+    let qr;
     // Consulta ao banco de dados
-    connection.query('SELECT * FROM registros WHERE numero_cnh = ?', [values[0]], (error, results) => {
-        if (error) {
-            console.error('Erro ao consultar o registro:', error);
-            res.status(500).json({ error: 'Erro ao consultar o registro' });
-        } else {
-            if (results.length > 0) {
-                res.status(200).json(results[0]); // Retorna o primeiro registro encontrado
-            } else {
-                res.status(404).json({ error: 'Registro não encontrado' });
-            }
-        }
-    });
+    select(values[0]).then(result => {
+        responseFull.json({valido: true,  qrCode: null , result});
+      }).catch(err => {
+        responseFull.json({valido: false,  qrCode: null , result});
+        console.error("Oops...", err);
+      });
+    
 });
 
+
+
+function select(attribute) {
+    return new Promise((resolve, reject) => {
+      let sql = `SELECT * FROM registros WHERE numero_cnh = ${attribute}`;
+      let query = connection.query(sql, (err, result, field) => {
+        if(err) return reject(err);
+        resolve(Object.values(JSON.parse(JSON.stringify(result))));
+      });
+    });
+  }
 // Rota para gerar QR code, enviar e-mail e salvar no banco de dados
 app.post('/api/generateQR', (req, responseFull) => { 
-    console.log(req.body.nome)
 
      saveToDatabaseAndSendEmail(req.body)
-    .then((res) => {
-        console.log('1 ',res  );
-        qr.toDataURL(Buffer.from(req.body.numero_cnh+ '+' + res.insertId).toString('base64'))
+    .then((res) => {  
+        qr.toDataURL(Buffer.from(req.body.numeroCnh + '+' + res.insertId).toString('base64'))
         .then((url) => {
             responseFull.json({valido: true, qrCode: url , message: 'QR code enviado por e-mail e salvo no banco de dados com sucesso!' })
-
-            // sendEmail(req.body.nome, req.body.email, req.body.res)
-            // .then((ok) => {
-            //     res.json({ qrCode: url , message: 'QR code enviado por e-mail e salvo no banco de dados com sucesso!' })
-            //     resolve(ok);
-            //     //ok.json({ qrCode: url , message: 'QR code enviado por e-mail e salvo no banco de dados com sucesso!' });
-
-            // })
-            // .catch((error) => {
-            //     console.error('Erro ao salvar no banco de dados e/ou enviar e-mail:', error);
-
-            // });
-
         },
         (reject)=>{
             console.error(err);
@@ -83,7 +77,7 @@ app.post('/api/generateQR', (req, responseFull) => {
         });
     })
     .catch((error) => {
-        console.log('2 ',error  );
+        
         responseFull.json({valido: false,  qrCode: null , message: error});
     });
  
@@ -99,10 +93,10 @@ async function saveToDatabaseAndSendEmail(data) {
         const resultadoValidacao = validarCampos(data);
         console.info(resultadoValidacao)
         if (resultadoValidacao.valido) {
-            const { nome, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode } = data;
+            const { nome, cpf, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode } = data;
         
-            const sql = 'INSERT INTO registros (nome, telefone, endereco, email, placa_moto, marca, modelo, numero_cnh, tipo_sanguineo, qr_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            connection.query(sql, [nome, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode], (error, results) => {
+            const sql = 'INSERT INTO registros (nome, cpf, telefone, endereco, email, placa_moto, marca, modelo, numero_cnh, tipo_sanguineo, qr_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            connection.query(sql, [nome, cpf, telefone, endereco, email, placaMoto, marca, modelo, numeroCnh, tipoSanguineo, qrCode], (error, results) => {
                 if (error) {
                     console.log("erro do banco" , error)
                     reject(error.code);

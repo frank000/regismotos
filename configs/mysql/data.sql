@@ -14,5 +14,5 @@ create table regismoto_db.registros
     numero_cnh     varchar(200) not null,
     tipo_sanguineo varchar(200) null,
     qr_code        varchar(200) null,
-    UNIQUE(numero_cnh)
+    UNIQUE(numero_cnh,cpf)
 );
