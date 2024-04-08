@@ -10,8 +10,9 @@
             margin: 5rem;
                 /* outline: solid 1px black; */
                 display: flex;
-                justify-content: center;
+                /* justify-content: center; */
                 align-items: center;
+                margin: 0 25vw;
         }
         .bg{
             position: relative; 
@@ -52,6 +53,8 @@
         }
         #qrCodeContainer{
             margin-left: 50%;
+            margin-bottom: 10rem;
+            margin-top: 3rem;
         }
         #contato{
             padding: 10px 5px 5px 11rem;
@@ -133,14 +136,14 @@
     
     
 <div id="ctnqrCode" style="color: #ffffff;padding: 0 45% 0 45%;">
-<div>
-    <h1>Comprovante de inscrição</h1>
-    <h3>Favor imprimir:         
-        <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
-        <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
-        <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
-</div>
-<div id="qrCodeContainer"></div>
+    <div>
+        <h1>Comprovante de inscrição</h1>
+        <h3>Favor imprimir:         
+            <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
+            <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
+            <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
+    </div>
+    <div id="qrCodeContainer"></div>
 
 </div>
     <script
