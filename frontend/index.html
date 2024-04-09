@@ -228,9 +228,7 @@
                     qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
                 }else if(data.message == "ER_DUP_ENTRY"){
                     alert("Já existe um registro com essa CNH.")
-                }
-                else if(ER_DUP_ENTRY){
-                    alert("Não foi possível registrar. Favor conferir os dados inseridos.")
+              
                 }else{
                     alert("Erro: " + data.message + ". Favor contactar a oraganização.")
                 }
