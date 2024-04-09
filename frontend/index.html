@@ -29,9 +29,9 @@
         <div class="row align-items-center justify-content-center">
           <div class="col-md-7 py-5">
             <h3>Encontro Motociclístico da PMDF</h3>
-            <p class="mb-4" style="color: rgb(32, 32, 32);">Inscrição mediante a doação de um quilo de alimento não perecível (exceto sal)
+            <p class="mb-4" style="color: rgb(32, 32, 32);">Inscrição mediante a doação de um quilo de alimento não perecível (exceto sal).</p>
 
-              Salve ou imprima o QRCODE gerado após a inscrição para apresentar no dia do evento.</p>
+              <p class="mb-4" style="color: rgb(32, 32, 32);">   Salve ou imprima o QRCODE gerado após a inscrição para apresentar no dia do evento.</p>
             <p class="mb-4" style="color: rgb(32, 32, 32);">Data: 04/05/24
               Local: <a href="https://maps.app.goo.gl/EroU6bEkijTeUCDk8?g_st=ic">Estacionamento do complexo ibero-americano</a> (antiga FUNARTE)
               
@@ -138,11 +138,22 @@
 
               <div class="row">
                 <div class="col-md-12">
-                  <div id="ctnqrCode" style="color: #ffffff;padding: 0 45% 0 45%;">
+                  <div id="ctnqrCode" >
                     <div>
                         <h1>Comprovante de inscrição</h1>
-                        <h3>Favor imprimir:         
-                            <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
+                        <h3>Favor imprimir:</h3>
+                          <div class="row">
+                            <div class="col-md-6">
+                              <input type="button" class="btn  btn btn-success" id="btn"
+                                onclick="salvarPrintscreen()" value="Salvar Comprovante"></input>         
+                    
+                            </div>
+                            <div class="col-md-6">
+                              <input type="button" class="btn btn btn-success" 
+                              id="bt" onclick="print()" value="Imprimir" />
+                            </div>  
+                          </div>
+                     
                             <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
                             <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
                     </div>
@@ -171,6 +182,7 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <script
   src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -203,7 +215,7 @@
                     $("#btnSave").prop("disabled", true);
                 }
             });
-            $("#ctnqrCode").hide();
+            $("#ctnqrCode").show();
 
             $('#bt').click(function () {
                 doc.fromHTML($('body').html(), 15, 15, {
@@ -222,7 +234,26 @@
             });
             generateQR(data);
         });
+            function capture() {
+                const captureElement = document.querySelector('#ctnqrCode') // Select the element you want to capture. Select the <body> element to capture full page.
+                html2canvas(captureElement)
+                    .then(canvas => {
+                        canvas.style.display = 'none'
+                        document.body.appendChild(canvas)
+                        return canvas
+                    })
+                    .then(canvas => {
+                        const image = canvas.toDataURL('image/png')
+                        const a = document.createElement('a')
+                        a.setAttribute('download', 'my-image.png')
+                        a.setAttribute('href', image)
+                        a.click()
+                        canvas.remove()
+                    })
+            }
 
+            const btn = document.querySelector('#btn')
+btn.addEventListener('click', capture)
         function generateQR(data) {
             fetch('/api/generateQR', {
                 method: 'POST',
