@@ -29,6 +29,9 @@
         <div class="row align-items-center justify-content-center">
           <div class="col-md-7 py-5">
             <h3>Encontro Motociclístico da PMDF</h3>
+            <p class="mb-4" style="color: rgb(32, 32, 32);">Inscrição mediante a doação de um quilo de alimento não perecível (exceto sal)
+
+              Salve ou imprima o QRCODE gerado após a inscrição para apresentar no dia do evento.</p>
             <p class="mb-4" style="color: rgb(32, 32, 32);">Data: 04/05/24
               Local: <a href="https://maps.app.goo.gl/EroU6bEkijTeUCDk8?g_st=ic">Estacionamento do complexo ibero-americano</a> (antiga FUNARTE)
               
@@ -133,6 +136,26 @@
 
               <button id="btnSave" type="submit" class="btn px-5 btn-primary">Cadastrar</button>
 
+              <div class="row">
+                <div class="col-md-12">
+                  <div id="ctnqrCode" style="color: #ffffff;padding: 0 45% 0 45%;">
+                    <div>
+                        <h1>Comprovante de inscrição</h1>
+                        <h3>Favor imprimir:         
+                            <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
+                            <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
+                            <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
+                    </div>
+                    <div id="qrCodeContainer"></div>
+    
+                  </div>
+                </div>
+              </div>
+
+
+
+            
+
             </form>
           </div>
         </div>
@@ -149,17 +172,6 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
 
-<div id="ctnqrCode" style="color: #ffffff;padding: 0 45% 0 45%;">
-    <div>
-        <h1>Comprovante de inscrição</h1>
-        <h3>Favor imprimir:         
-            <input type="button" id="bt" onclick="print()" value="Salvar PDF" /></h3>
-            <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
-            <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
-    </div>
-    <div id="qrCodeContainer"></div>
-
-</div>
     <script
   src="https://code.jquery.com/jquery-3.7.1.min.js"
   integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
