@@ -53,9 +53,9 @@ services:
     build: ./frontend/.
     ports:
       # <Port exposed> : <MySQL Port running inside container>
-      - '8080:8080'
+      - '80:80'
     expose:
-      - '8080'
+      - '80'
     restart: on-failure
     networks:
       - app-tier  
