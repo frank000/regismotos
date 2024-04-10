@@ -15,6 +15,16 @@
     
     <!-- Style -->
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        #ctnqrCode{
+            margin-top: 5rem;
+            break-inside: avoid;
+        }
+
+        #result p{
+            color: rgb(54, 54, 54);
+        }
+    </style>
 
     <title>Encontro Motociclístico da Polícia Militar do Distrito Federal</title>
 </head>
@@ -139,6 +149,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <div id="ctnqrCode" >
+                    <hr>
                     <div>
                         <h1>Comprovante de inscrição</h1>
                         <h3>Favor imprimir:</h3>
@@ -157,9 +168,17 @@
                             <h5>Não esqueça de imprimir e levar o comprovante.        </h5>    
                             <h5>ENTRADA CONDICIONADA A APRESENTAÇÃO DO COMPROVANTE!</h5>   
                     </div>
-                    <div id="qrCodeContainer"></div>
+                    <div id="qrCodeContainer" class="row">
+
+                        <div id="result">
+                            <p>Nome:<input id="resultNome" disabled="true" /></p>
+                            <p>CPF:<input id="resultCPF" disabled="true"/></p>
+                            <p>Placa da moto:<input id="resultPlaca" disabled="true"/></p>
+                        </div>
+                    </div>
     
                   </div>
+                  <hr>
                 </div>
               </div>
 
@@ -253,7 +272,9 @@
             }
 
             const btn = document.querySelector('#btn')
-btn.addEventListener('click', capture)
+        btn.addEventListener('click', capture)
+
+
         function generateQR(data) {
             fetch('/api/generateQR', {
                 method: 'POST',
@@ -265,10 +286,22 @@ btn.addEventListener('click', capture)
             .then(response => response.json())
             .then(data => {
                 if(data.valido){
+
                     $("#ctnqrCode").show();
                     $("#btnSave").attr("disabled", true);  
                     const qrCodeContainer = document.getElementById('qrCodeContainer');
                     qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+
+                    window.scrollTo(0, document.body.scrollHeight);
+                    $("input[type='text']").attr("disabled", true);
+                    $("input[type='email']").attr("disabled", true);
+
+                    $("#resultNome").val($("#nome").val());
+                    $("#resultCPF").val($("#cpf").val());
+
+                    $("#resultPlaca").val($("#placaMoto").val());
+
+
                 }else if(data.message == "ER_DUP_ENTRY"){
                     alert("Já existe um registro com essa CNH.")
               
